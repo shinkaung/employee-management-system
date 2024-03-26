@@ -8,6 +8,7 @@ namespace EMS.Profiles
     {
         public DepartmentProfile()
         {
+            CreateMap<Department, DepartmentListDTO>();
             CreateMap<Department, DepartmentDetailedDTO>();
             CreateMap<DepartmentUpdateDTO, Department>();
         }
