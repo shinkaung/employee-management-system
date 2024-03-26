@@ -9,7 +9,6 @@ namespace EMS.Controllers
 {
     [ApiController]
     [Route("/api/[controller]")]
-    // [Authorize(Roles = "admin")]
     public class DepartmentController : Controller
     {
         /*** Properties ***/
@@ -32,7 +31,7 @@ namespace EMS.Controllers
         {
             try
             {
-                var departments = await _unitOfWork.repoDepartment.GetAll(propsInclude: ["HeadOfDepartment"]);
+                var departments = await _unitOfWork.repoDepartment.GetAll();
 
                 /* Pagination */
                 // Input Limitation
@@ -158,7 +157,7 @@ namespace EMS.Controllers
         {
             try
             {
-                var department = await _unitOfWork.repoDepartment.Get(d => d.Id == id);
+                var department = await _unitOfWork.repoDepartment.Get(d => d.Id == id, propsInclude: ["Units"]);
                 if (department == null) return NotFound();
 
                 var units = department.Units;

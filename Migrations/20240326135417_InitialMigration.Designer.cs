@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EMS.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240303034852_v02_Added_Department")]
-    partial class v02_Added_Department
+    [Migration("20240326135417_InitialMigration")]
+    partial class InitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -27,22 +27,21 @@ namespace EMS.Migrations
 
             modelBuilder.Entity("EMS.Models.Department", b =>
                 {
-                    b.Property<int>("DepartmentId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("DepartmentId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("DepartmentCode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("DepartmentName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("HeadOfDepartmentId")
-                        .HasColumnType("int");
-
-                    b.HasKey("DepartmentId");
-
-                    b.HasIndex("HeadOfDepartmentId");
+                    b.HasKey("Id");
 
                     b.ToTable("Departments");
                 });
@@ -61,12 +60,19 @@ namespace EMS.Migrations
                     b.Property<DateOnly>("DateOfBirth")
                         .HasColumnType("date");
 
-                    b.Property<string>("EmailAddress")
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("EmployeeId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Gender")
+                        .HasColumnType("int");
 
                     b.Property<DateOnly>("JoinedDate")
                         .HasColumnType("date");
@@ -78,57 +84,71 @@ namespace EMS.Migrations
                     b.Property<string>("Phone")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("UnitId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UnitId");
 
                     b.ToTable("Employees");
                 });
 
-            modelBuilder.Entity("EMS.Models.Section", b =>
+            modelBuilder.Entity("EMS.Models.Unit", b =>
                 {
-                    b.Property<int>("SectionId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SectionId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("DepartmentId")
+                    b.Property<int>("DepartmentId")
                         .HasColumnType("int");
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("SectionName")
+                    b.Property<string>("UnitName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("SectionId");
+                    b.HasKey("Id");
 
                     b.HasIndex("DepartmentId");
 
-                    b.ToTable("Section");
+                    b.ToTable("Units");
                 });
 
-            modelBuilder.Entity("EMS.Models.Department", b =>
+            modelBuilder.Entity("EMS.Models.Employee", b =>
                 {
-                    b.HasOne("EMS.Models.Employee", "HeadOfDepartment")
-                        .WithMany()
-                        .HasForeignKey("HeadOfDepartmentId")
+                    b.HasOne("EMS.Models.Unit", "Unit")
+                        .WithMany("Employees")
+                        .HasForeignKey("UnitId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("HeadOfDepartment");
+                    b.Navigation("Unit");
                 });
 
-            modelBuilder.Entity("EMS.Models.Section", b =>
+            modelBuilder.Entity("EMS.Models.Unit", b =>
                 {
-                    b.HasOne("EMS.Models.Department", null)
-                        .WithMany("Sections")
-                        .HasForeignKey("DepartmentId");
+                    b.HasOne("EMS.Models.Department", "Department")
+                        .WithMany("Units")
+                        .HasForeignKey("DepartmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Department");
                 });
 
             modelBuilder.Entity("EMS.Models.Department", b =>
                 {
-                    b.Navigation("Sections");
+                    b.Navigation("Units");
+                });
+
+            modelBuilder.Entity("EMS.Models.Unit", b =>
+                {
+                    b.Navigation("Employees");
                 });
 #pragma warning restore 612, 618
         }

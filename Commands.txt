@@ -1,0 +1,11 @@
+# Development
+dotnet run --environment=Development
+
+# Production
+dotnet run --environment=Production
+
+# Add Migrations & Update Database
+SET ASPNETCORE_ENVIRONMENT=Production
+echo %ASPNETCORE_ENVIRONMENT%
+dotnet ef migrations add <migration_name>
+dotnet ef database update

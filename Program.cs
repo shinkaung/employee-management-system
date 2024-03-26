@@ -1,21 +1,14 @@
 using System.Net;
-using System.Text;
 using EMS;
 using EMS.Data;
 using EMS.Repositories;
 using EMS.Repositories.Interfaces;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 
 /* .ENV Loading */
 var root = Directory.GetCurrentDirectory();
 var dotenvFile = Path.Combine(root, ".env");
 DotEnv.Load(dotenvFile);
-
-var JWT_SECRET = Environment.GetEnvironmentVariable("JWT_SECRET") ?? "P@s5w0rd";
-var JWT_ISSUER = Environment.GetEnvironmentVariable("JWT_ISSUER");
-var JWT_AUDIENCE = Environment.GetEnvironmentVariable("JWT_AUDIENCE");
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -35,7 +28,7 @@ builder.WebHost.UseKestrel(options =>
         else
         {
             httpPort = 80;
-            httpsPort = 443;
+            httpsPort = 18443;
         }
 
         options.Listen(IPAddress.Any, httpPort);
@@ -59,7 +52,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
             var username = Environment.GetEnvironmentVariable("MSSQL_DATABASE_USERNAME");
             var password = Environment.GetEnvironmentVariable("MSSQL_DATABASE_PASSWORD");
 
-            options.UseSqlServer(
+            options.UseLazyLoadingProxies().UseSqlServer(
                 $"Server={server},{port};Database={database};User ID={username};Password={password};Trusted_Connection=False;TrustServerCertificate=True"
             );
         }
@@ -76,21 +69,6 @@ builder.Services.AddCors(options =>
             .AllowAnyMethod()
             .AllowAnyHeader());
 });
-builder.Services
-    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
-    {
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true,
-            ValidIssuer = JWT_ISSUER,
-            ValidAudience = JWT_AUDIENCE,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(JWT_SECRET))
-        };
-    });
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
@@ -110,8 +88,6 @@ if (app.Environment.IsDevelopment())
 // app.UseHttpsRedirection();
 app.UseRouting();
 app.UseCors("AllowAll");
-app.UseAuthentication();
-app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",

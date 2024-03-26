@@ -9,7 +9,6 @@ namespace EMS.Controllers
 {
     [ApiController]
     [Route("/api/[controller]")]
-    // [Authorize(Roles = "admin")]
     public class EmployeeController : Controller
     {
         /*** Properties ***/

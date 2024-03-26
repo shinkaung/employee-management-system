@@ -12,10 +12,10 @@ namespace EMS.Models
         public string? Description { get; set; }
 
         /* Navigational Properties */
-        [Required]
-        [ForeignKey("id")]
+        // [Required]
         public int DepartmentId { get; set; }
-        public virtual Department Department { get; set; } = null!;
+        [ForeignKey("DepartmentId")]
+        public virtual Department? Department { get; set; }
         public virtual ICollection<Employee> Employees { get; set; } = [];
     }
 }

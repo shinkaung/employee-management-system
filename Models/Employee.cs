@@ -1,7 +1,6 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Runtime.Serialization;
 
 namespace EMS.Models
 {
@@ -26,9 +25,9 @@ namespace EMS.Models
         public string? Address { get; set; }
 
         /* Navigational Properties */
-        [Required]
-        [ForeignKey(nameof(Unit))]
+        // [Required]
         public int UnitId { get; set; }
+        [ForeignKey("UnitId")]
         public virtual Unit? Unit { get; set; }
     }
 
