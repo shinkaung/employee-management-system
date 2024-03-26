@@ -20,24 +20,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ matrix.node-version }}
-          cache: "npm"
-
       - name: Setup Git Config
         run: |
           git config user.name "Stephen Phyo"
           git config user.email "stephenphyo2019.official@gmail.com"
-
-      - name: Install Dependencies
-        run: npm install
-
-      - name: Build React Project
-        run: npm run build --if-present
-        env:
-          CI: false
 
       - name: Save Version
         id: version
