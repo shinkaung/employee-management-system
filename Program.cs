@@ -32,10 +32,10 @@ builder.WebHost.UseKestrel(options =>
         }
 
         options.Listen(IPAddress.Any, httpPort);
-        options.Listen(IPAddress.Any, httpsPort, listenOptions =>
-        {
-            listenOptions.UseHttps();
-        });
+        // options.Listen(IPAddress.Any, httpsPort, listenOptions =>
+        // {
+        //     listenOptions.UseHttps();
+        // });
     }
 );
 
