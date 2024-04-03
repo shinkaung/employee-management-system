@@ -88,6 +88,6 @@ app.MapControllerRoute(
 );
 
 // Commented out the database seeding
-InitDB.Initialize(app, app.Environment.IsProduction());
+//InitDB.Initialize(app, app.Environment.IsProduction());
 
 app.Run();
