@@ -42,26 +42,29 @@ builder.WebHost.UseKestrel(options =>
 /*** Add Services to the Container ***/
 builder.Services.AddControllers();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-builder.Services.AddDbContext<AppDbContext>(options =>
-    {
-        if (builder.Environment.IsProduction())
-        {
-            var server = Environment.GetEnvironmentVariable("MSSQL_DATABASE_SERVER");
-            var port = Environment.GetEnvironmentVariable("MSSQL_DATABASE_PORT");
-            var database = Environment.GetEnvironmentVariable("MSSQL_DATABASE_DATABASE");
-            var username = Environment.GetEnvironmentVariable("MSSQL_DATABASE_USERNAME");
-            var password = Environment.GetEnvironmentVariable("MSSQL_DATABASE_PASSWORD");
 
-            options.UseLazyLoadingProxies().UseSqlServer(
-                $"Server={server},{port};Database={database};User ID={username};Password={password};Trusted_Connection=False;TrustServerCertificate=True"
-            );
-        }
-        if (builder.Environment.IsDevelopment())
-        {
-            options.UseLazyLoadingProxies().UseInMemoryDatabase("InMem");
-        }
-    }
-);
+// Commented out the database configuration
+// builder.Services.AddDbContext<AppDbContext>(options =>
+//     {
+//         if (builder.Environment.IsProduction())
+//         {
+//             var server = Environment.GetEnvironmentVariable("MSSQL_DATABASE_SERVER");
+//             var port = Environment.GetEnvironmentVariable("MSSQL_DATABASE_PORT");
+//             var database = Environment.GetEnvironmentVariable("MSSQL_DATABASE_DATABASE");
+//             var username = Environment.GetEnvironmentVariable("MSSQL_DATABASE_USERNAME");
+//             var password = Environment.GetEnvironmentVariable("MSSQL_DATABASE_PASSWORD");
+
+//             options.UseLazyLoadingProxies().UseSqlServer(
+//                 $"Server={server},{port};Database={database};User ID={username};Password={password};Trusted_Connection=False;TrustServerCertificate=True"
+//             );
+//         }
+//         if (builder.Environment.IsDevelopment())
+//         {
+//             options.UseLazyLoadingProxies().UseInMemoryDatabase("InMem");
+//         }
+//     }
+// );
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", builder =>
@@ -94,7 +97,7 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}"
 );
 
-/*** Initial Data Seeding ***/
-InitDB.Initialize(app, app.Environment.IsProduction());
+// Commented out the database seeding
+// InitDB.Initialize(app, app.Environment.IsProduction());
 
 app.Run();
