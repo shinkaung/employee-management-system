@@ -17,58 +17,48 @@ builder.Configuration.AddEnvironmentVariables();
 
 /*** Configure Kestrel Endpoints ***/
 builder.WebHost.UseKestrel(options =>
+{
+    int httpPort, httpsPort;
+
+    if (builder.Environment.IsDevelopment())
     {
-        int httpPort, httpsPort;
-
-        if (builder.Environment.IsDevelopment())
-        {
-            httpPort = 5012;
-            httpsPort = 7012;
-        }
-        else
-        {
-            httpPort = 80;
-            httpsPort = 18443;
-        }
-
-        options.Listen(IPAddress.Any, httpPort);
-        // options.Listen(IPAddress.Any, httpsPort, listenOptions =>
-        // {
-        //     listenOptions.UseHttps();
-        // });
+        httpPort = 5012;
+        httpsPort = 7012;
     }
-);
+    else
+    {
+        httpPort = 80;
+        httpsPort = 18443;
+    }
+
+    options.Listen(IPAddress.Any, httpPort);
+    // options.Listen(IPAddress.Any, httpsPort, listenOptions =>
+    // {
+    //     listenOptions.UseHttps();
+    // });
+});
 
 /*** Add Services to the Container ***/
 builder.Services.AddControllers();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-// Commented out the database configuration
-// builder.Services.AddDbContext<AppDbContext>(options =>
-//     {
-//         if (builder.Environment.IsProduction())
-//         {
-//             var server = Environment.GetEnvironmentVariable("MSSQL_DATABASE_SERVER");
-//             var port = Environment.GetEnvironmentVariable("MSSQL_DATABASE_PORT");
-//             var database = Environment.GetEnvironmentVariable("MSSQL_DATABASE_DATABASE");
-//             var username = Environment.GetEnvironmentVariable("MSSQL_DATABASE_USERNAME");
-//             var password = Environment.GetEnvironmentVariable("MSSQL_DATABASE_PASSWORD");
+builder.Services.AddDbContext<AppDbContext>(options =>
+{
+    var server = Environment.GetEnvironmentVariable("MYSQL_DATABASE_SERVER");
+    var port = Environment.GetEnvironmentVariable("MYSQL_DATABASE_PORT");
+    var database = Environment.GetEnvironmentVariable("MYSQL_DATABASE_DATABASE");
+    var username = Environment.GetEnvironmentVariable("MYSQL_DATABASE_USERNAME");
+    var password = Environment.GetEnvironmentVariable("MYSQL_DATABASE_PASSWORD");
 
-//             options.UseLazyLoadingProxies().UseSqlServer(
-//                 $"Server={server},{port};Database={database};User ID={username};Password={password};Trusted_Connection=False;TrustServerCertificate=True"
-//             );
-//         }
-//         if (builder.Environment.IsDevelopment())
-//         {
-//             options.UseLazyLoadingProxies().UseInMemoryDatabase("InMem");
-//         }
-//     }
-// );
+    var connectionString = $"Server={server};Port={port};Database={database};Uid={username};Pwd={password};";
+
+    options.UseLazyLoadingProxies().UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
+});
 
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", builder =>
-            builder.AllowAnyOrigin()
+        builder.AllowAnyOrigin()
             .AllowAnyMethod()
             .AllowAnyHeader());
 });
@@ -98,6 +88,6 @@ app.MapControllerRoute(
 );
 
 // Commented out the database seeding
-// InitDB.Initialize(app, app.Environment.IsProduction());
+InitDB.Initialize(app, app.Environment.IsProduction());
 
 app.Run();
