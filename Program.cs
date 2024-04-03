@@ -4,6 +4,7 @@ using EMS.Data;
 using EMS.Repositories;
 using EMS.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using MySql.Data.EntityFrameworkCore.Extensions;
 
 /* .ENV Loading */
 var root = Directory.GetCurrentDirectory();
