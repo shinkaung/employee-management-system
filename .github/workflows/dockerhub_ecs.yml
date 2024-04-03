@@ -16,8 +16,8 @@ jobs:
 
       - name: Setup Git Config
         run: |
-          git config user.name "Stephen Phyo"
-          git config user.email "stephenphyo2019.official@gmail.com"
+          git config user.name "shinkaung"
+          git config user.email "shinkaung@gmail.com"
 
       - name: Save Version
         id: version
@@ -40,7 +40,7 @@ jobs:
           push: true
           context: .
           file: Dockerfile.prod
-          tags: stephenphyo/web-012-employee-management-system-backend:latest
+          tags: august251999/employee-management-system:latest
 
   deploy:
     name: Deploy to Amazon ECS
