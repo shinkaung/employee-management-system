@@ -58,9 +58,11 @@ builder.Services.AddDbContext<AppDbContext>(options =>
         var username = Environment.GetEnvironmentVariable("MYSQL_DATABASE_USERNAME");
         var password = Environment.GetEnvironmentVariable("MYSQL_DATABASE_PASSWORD");
 
-        options.UseLazyLoadingProxies().UseMySql(
-            $"Server={server};Port={port};Database={database};Uid={username};Pwd={password};"
-        );
+        options.UseMySql(
+            $"Server={server};Port={port};Database={database};Uid={username};Pwd={password};",
+            ServerVersion.Parse("8.0.0") 
+);
+
     }
     if (builder.Environment.IsDevelopment())
     {
