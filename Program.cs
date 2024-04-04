@@ -1,10 +1,15 @@
+using System.IO;
 using System.Net;
 using EMS;
 using EMS.Data;
 using EMS.Repositories;
 using EMS.Repositories.Interfaces;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
-using MySql.Data.EntityFrameworkCore.Extensions;
 
 /* .ENV Loading */
 var root = Directory.GetCurrentDirectory();
