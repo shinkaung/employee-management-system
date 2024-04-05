@@ -11,10 +11,6 @@ RUN dotnet restore -a $TARGETARCH
 COPY . .
 RUN dotnet publish -c Release -o build
 
-# Run Migrations
-RUN dotnet ef migrations add InitialCreate --context AppDbContext
-RUN dotnet ef database update --context AppDbContext
-
 # Run
 FROM mcr.microsoft.com/dotnet/aspnet:8.0
 WORKDIR /app
