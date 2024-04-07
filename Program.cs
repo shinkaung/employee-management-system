@@ -1,14 +1,8 @@
-using System.IO;
 using System.Net;
 using EMS;
 using EMS.Data;
 using EMS.Repositories;
 using EMS.Repositories.Interfaces;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
 
 /* .ENV Loading */
@@ -33,8 +27,8 @@ builder.WebHost.UseKestrel(options =>
         }
         else
         {
-            httpPort = 80;
-            httpsPort = 18443;
+            httpPort = 5012;
+            httpsPort = 7012;
         }
 
         options.Listen(IPAddress.Any, httpPort);
@@ -49,26 +43,25 @@ builder.WebHost.UseKestrel(options =>
 builder.Services.AddControllers();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddDbContext<AppDbContext>(options =>
-{
-    if (builder.Environment.IsProduction())
     {
-        var server = Environment.GetEnvironmentVariable("MYSQL_DATABASE_SERVER");
-        var port = Environment.GetEnvironmentVariable("MYSQL_DATABASE_PORT");
-        var database = Environment.GetEnvironmentVariable("MYSQL_DATABASE_DATABASE");
-        var username = Environment.GetEnvironmentVariable("MYSQL_DATABASE_USERNAME");
-        var password = Environment.GetEnvironmentVariable("MYSQL_DATABASE_PASSWORD");
+        if (builder.Environment.IsProduction())
+        {
+            var server = Environment.GetEnvironmentVariable("MSSQL_DATABASE_SERVER");
+            var port = Environment.GetEnvironmentVariable("MSSQL_DATABASE_PORT");
+            var database = Environment.GetEnvironmentVariable("MSSQL_DATABASE_DATABASE");
+            var username = Environment.GetEnvironmentVariable("MSSQL_DATABASE_USERNAME");
+            var password = Environment.GetEnvironmentVariable("MSSQL_DATABASE_PASSWORD");
 
-        options.UseMySql(
-            $"Server={server};Port={port};Database={database};Uid={username};Pwd={password};",
-            ServerVersion.Parse("8.0.0") 
+            options.UseLazyLoadingProxies().UseSqlServer(
+                $"Server={server},{port};Database={database};User ID={username};Password={password};Trusted_Connection=False;TrustServerCertificate=True"
+            );
+        }
+        if (builder.Environment.IsDevelopment())
+        {
+            options.UseLazyLoadingProxies().UseInMemoryDatabase("InMem");
+        }
+    }
 );
-
-    }
-    if (builder.Environment.IsDevelopment())
-    {
-        options.UseLazyLoadingProxies().UseInMemoryDatabase("InMem");
-    }
-});
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", builder =>
