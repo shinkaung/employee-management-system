@@ -1,0 +1,32 @@
+version: '3.4'
+
+services:
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: shinkg123  # Set the root password here
+      MYSQL_DATABASE: webems
+    ports:
+      - "3306:3306"
+    networks:
+      - mynetwork
+
+  app:
+    build: .
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      MYSQL_DATABASE_HOST: db
+      MYSQL_DATABASE_PORT: "3306"  # Ensure port is in quotes to specify as a string
+      MYSQL_DATABASE_NAME: webems
+      MYSQL_DATABASE_USERNAME: root  # Use root as the username for MySQL
+      MYSQL_DATABASE_PASSWORD: shinkg123
+    depends_on:
+      - db
+    ports:
+      - "5012:80"
+    networks:
+      - mynetwork
+
+networks:
+  mynetwork:
+    driver: bridge

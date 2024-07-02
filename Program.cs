@@ -4,6 +4,7 @@ using EMS.Data;
 using EMS.Repositories;
 using EMS.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 
 /* .ENV Loading */
 var root = Directory.GetCurrentDirectory();
@@ -14,54 +15,61 @@ var builder = WebApplication.CreateBuilder(args);
 
 /*** Add Configurations to the Container ***/
 builder.Configuration.AddEnvironmentVariables();
+builder.WebHost.UseUrls(builder.Configuration["ASPNETCORE_URLS"] ?? "http://*:80");
 
 /*** Configure Kestrel Endpoints ***/
-builder.WebHost.UseKestrel(options =>
-    {
-        int httpPort, httpsPort;
+// builder.WebHost.UseKestrel(options =>
+//     {
+//         int httpPort, httpsPort;
 
-        if (builder.Environment.IsDevelopment())
-        {
-            httpPort = 5012;
-            httpsPort = 7012;
-        }
-        else
-        {
-            httpPort = 5012;
-            httpsPort = 7012;
-        }
+//         if (builder.Environment.IsDevelopment())
+//         {
+//             httpPort = 5012;
+//             httpsPort = 7012;
+//         }
+//         else
+//         {
+//             httpPort = 5012;
+//             httpsPort = 7012;
+//         }
 
-        options.Listen(IPAddress.Any, httpPort);
-        // options.Listen(IPAddress.Any, httpsPort, listenOptions =>
-        // {
-        //     listenOptions.UseHttps();
-        // });
-    }
-);
+//         options.Listen(IPAddress.Any, httpPort);
+//         // options.Listen(IPAddress.Any, httpsPort, listenOptions =>
+//         // {
+//         //     listenOptions.UseHttps();
+//         // });
+//     }
+// );
 
 /*** Add Services to the Container ***/
-builder.Services.AddControllers();
-builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-builder.Services.AddDbContext<AppDbContext>(options =>
-    {
-        if (builder.Environment.IsProduction())
-        {
-            var server = Environment.GetEnvironmentVariable("MSSQL_DATABASE_SERVER");
-            var port = Environment.GetEnvironmentVariable("MSSQL_DATABASE_PORT");
-            var database = Environment.GetEnvironmentVariable("MSSQL_DATABASE_DATABASE");
-            var username = Environment.GetEnvironmentVariable("MSSQL_DATABASE_USERNAME");
-            var password = Environment.GetEnvironmentVariable("MSSQL_DATABASE_PASSWORD");
+            builder.Services.AddControllers();
+            builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+            builder.Services.AddDbContext<AppDbContext>(options =>
+            {
+                if (builder.Environment.IsProduction())
+                {
+                    var server = Environment.GetEnvironmentVariable("MYSQL_DATABASE_HOST");
+                    var port = Environment.GetEnvironmentVariable("MYSQL_DATABASE_PORT");
+                    var database = Environment.GetEnvironmentVariable("MYSQL_DATABASE_NAME");
+                    var username = Environment.GetEnvironmentVariable("MYSQL_DATABASE_USERNAME");
+                    var password = Environment.GetEnvironmentVariable("MYSQL_DATABASE_PASSWORD");
 
-            options.UseLazyLoadingProxies().UseSqlServer(
-                $"Server={server},{port};Database={database};User ID={username};Password={password};Trusted_Connection=False;TrustServerCertificate=True"
-            );
-        }
-        if (builder.Environment.IsDevelopment())
-        {
-            options.UseLazyLoadingProxies().UseInMemoryDatabase("InMem");
-        }
+                    var connectionString = $"Server={server};Port={port};Database={database};User={username};Password={password};";
+
+        options.UseLazyLoadingProxies().UseMySql(
+            connectionString,
+            ServerVersion.AutoDetect(connectionString),
+            mySqlOptions =>
+            {
+                mySqlOptions.EnableRetryOnFailure();
+            }
+        );
     }
-);
+                else if (builder.Environment.IsDevelopment())
+                {
+                    options.UseLazyLoadingProxies().UseInMemoryDatabase("InMem");
+                }
+            });
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", builder =>
