@@ -13,6 +13,11 @@ COPY . .
 FROM base AS build
 RUN npm run build
 
+# Development stage
+FROM base AS dev
+EXPOSE 3000
+CMD ["npm", "start"]
+
 # Production stage
 FROM nginx AS final
 WORKDIR /usr/share/nginx/html

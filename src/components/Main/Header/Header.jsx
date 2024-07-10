@@ -57,7 +57,7 @@ function Header() {
                 {
                     <Dropdown>
                         <Dropdown.Title enableArrow={false}>
-                            <span>Stephen</span>
+                            <span>Shan</span>
                             <img className='header_right_avatar'
                                 src='https://cdn4.iconfinder.com/data/icons/avatars-xmas-giveaway/128/batman_hero_avatar_comics-512.png'
                                 alt='avatar' />
@@ -65,7 +65,7 @@ function Header() {
                         <Dropdown.Menu>
                             <Dropdown.Item clickable={false}>
                                 <div className='d-flex flex-column'>
-                                    <span>STEPHEN PHYO</span>
+                                    <span>Shin Kaung</span>
                                     <span>a@gmail.com</span>
                                 </div>
                             </Dropdown.Item>

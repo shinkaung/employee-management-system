@@ -3,9 +3,14 @@ version: '3.4'
 services:
   frontend:
     build:
-      dockerfile: Dockerfile  
+      context: .
+      dockerfile: Dockerfile
+      target: dev  # Use the development stage
     ports:
-      - "3000:80"  
+      - "3000:3000"
+    volumes:
+      - .:/app  # Mount the current directory to /app in the container
+      - /app/node_modules  # Ensure node_modules is not overwritten
     networks:
       - mynetwork
 
