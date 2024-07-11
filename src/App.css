@@ -1,85 +1,27 @@
 * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+* {
     --app-header-height: 50px;
 
-    /* Main color palette */
-    --color-electric-blue: #373e98;
-    --color-hot-pink: #f16775;
-    --color-shocking-yellow: #fee36e;
-    --color-chartreuse: #ceb92c;
-    --color-darkest-gray: #2a2a2a;
-
-    /* Assign colors to functional variables */
-    --color-primary: var(--color-electric-blue);
-    --color-secondary: var(--color-hot-pink);
-    --color-accent: var(--color-shocking-yellow);
-    --color-background: var(--color-darkest-gray);
-    --color-text: #ffffff;  /* White text for contrast */
+    --color-primary: #00FFFF;
+    --color-secondary: #1E90FF;
 
     --font-primary: 'sans-serif';
     --font-size-primary: 14px;
 }
 
 .app {
+    display: flex;
+    flex-direction: column;
+    min-width: 100vw;
+    min-height: 100vh;
+    font-family: var(--font-primary);
+    font-size: 14px;
     color: var(--color-text);
-    background-color: var(--color-background);
-}
-
-/* Additional styles for other elements */
-.header {
-    background-color: var(--color-primary);
-    color: var(--color-text);
-}
-
-.button-primary {
-    background-color: var(--color-secondary);
-    color: var(--color-text);
-}
-
-.button-secondary {
-    background-color: var(--color-accent);
-    color: var(--color-darkest-gray);  /* Dark text for contrast on light button */
-}
-
-.highlight {
-    color: var(--color-chartreuse);
-}
-
-/* Table styles */
-.data-table {
-    border-collapse: collapse;
-    width: 100%;
-}
-
-.column-header {
-    background-color: var(--color-primary);
-    color: var(--color-text);
-    padding: 12px;
-    text-align: left;
-}
-
-.data-row:nth-child(odd) {
-    background-color: rgba(55, 62, 152, 0.1);  /* Light electric blue */
-}
-
-.data-row:nth-child(even) {
-    background-color: rgba(55, 62, 152, 0.2);  /* Slightly darker electric blue */
-}
-
-.data-cell {
-    color: var(--color-text);
-    padding: 12px;
-}
-
-.action-button {
-    background-color: var(--color-secondary);
-    color: var(--color-text);
-    padding: 6px 12px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-.action-button:hover {
-    background-color: var(--color-accent);
-    color: var(--color-darkest-gray);
+    background-color: var(--color-dark);
+    background-attachment: fixed;
 }
